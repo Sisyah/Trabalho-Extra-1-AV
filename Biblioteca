@@ -1,0 +1,126 @@
+import java.util.List;  
+import java.util.ArrayList;
+
+class Livro {
+    private String titulo;
+    private String autor;
+    private int anoPublicacao;
+    private String ISBN;
+    private boolean disponivel;
+
+    public Livro(String titulo, String autor, int anoPublicacao, String ISBN) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.anoPublicacao = anoPublicacao;
+        this.ISBN = ISBN;
+        this.disponivel = true; 
+    }
+
+    public void exibirDetalhes() {
+        System.out.println("Título: " + titulo);
+        System.out.println("Autor: " + autor);
+        System.out.println("Ano de Publicação: " + anoPublicacao);
+        System.out.println("ISBN: " + ISBN);
+        System.out.println("Disponível: " + (disponivel ? "Sim" : "Não"));
+    }
+
+    public boolean estaDisponivel() {
+        return disponivel;
+    }
+
+    public void emprestar() {
+        this.disponivel = false;
+    }
+
+    public void devolver() {
+        this.disponivel = true;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+}
+
+class Usuario {
+    private String nome;
+    private String idUsuario;
+
+    public Usuario(String nome, String idUsuario) {
+        this.nome = nome;
+        this.idUsuario = idUsuario;
+    }
+
+    public void emprestarLivro(Livro livro) {
+        if (livro.estaDisponivel()) {
+            livro.emprestar();
+            System.out.println(nome + " emprestou o livro: " + livro.getTitulo());
+        } else {
+            System.out.println("O livro " + livro.getTitulo() + " não está disponível.");
+        }
+    }
+
+    public void devolverLivro(Livro livro) {
+        livro.devolver();
+        System.out.println(nome + " devolveu o livro: " + livro.getTitulo());
+    }
+}
+
+class Biblioteca {
+    private List<Livro> livros;
+
+    public Biblioteca() {
+        this.livros = new ArrayList<>(); 
+    }
+
+    public void adicionarLivro(Livro livro) {
+        livros.add(livro);
+        System.out.println("Livro adicionado: " + livro.getTitulo());
+    }
+
+    public void listarLivrosDisponiveis() {
+        System.out.println("Livros disponíveis para empréstimo:");
+        for (Livro livro : livros) {
+            if (livro.estaDisponivel()) {
+                livro.exibirDetalhes();
+                System.out.println(); 
+            }
+        }
+    }
+
+    public Livro buscarLivroPorTitulo(String titulo) {
+        for (Livro livro : livros) {
+            if (livro.getTitulo().equalsIgnoreCase(titulo)) {
+                return livro;
+            }
+        }
+        System.out.println("Livro não encontrado.");
+        return null;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Biblioteca biblioteca = new Biblioteca();
+
+        Livro livro1 = new Livro("Carmilla", "Joseph Sheridan Le Fanu", 1872, "978-1-59308-196-5");
+        Livro livro2 = new Livro("Orlando: A Biography", "Virginia Woolf", 1928, "978-0-15-101030-3");
+        Livro livro3 = new Livro("The Miseducation of Cameron Post", "Emily M. Danforth", 2012, "978-0-06-202057-5");
+
+        biblioteca.adicionarLivro(livro1);
+        biblioteca.adicionarLivro(livro2);
+        biblioteca.adicionarLivro(livro3);
+
+        biblioteca.listarLivrosDisponiveis();
+
+        Usuario usuario = new Usuario("Evelyn H.", "584610");
+
+        usuario.emprestarLivro(livro1);
+        usuario.emprestarLivro(livro2);
+
+        biblioteca.listarLivrosDisponiveis();
+
+        usuario.devolverLivro(livro1);
+
+        biblioteca.listarLivrosDisponiveis();
+    }
+}
